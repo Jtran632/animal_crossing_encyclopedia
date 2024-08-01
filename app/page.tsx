@@ -2,7 +2,7 @@ import Footer from "./components/footer";
 import Villagers from "./components/villagers";
 
 async function getVillagerData() {
-  const url = `https://api.nookipedia.com/villagers?nhdetails=true?limit=10`;
+  const url = `https://api.nookipedia.com/villagers?nhdetails=true`;
 
   const headers = {
     "X-API-KEY": process.env.NOOKIPEDIA_KEY as string,
@@ -29,7 +29,7 @@ export default async function Home() {
         <div className="">
           <Villagers data={data} />
         </div>
-        <Footer/>
+        <Footer />
       </main>
     );
   } catch (error) {
