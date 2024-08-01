@@ -4,21 +4,39 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 import VillagerModal from "./villagerModal";
 export default function Villagers({ data }: any) {
-  console.log(data);
+  // console.log(data);
   const [curPage, setCurPage] = useState(1);
   const [modal, setModal] = useState({
     data: data,
     hidden: true,
   });
-  const pages = Array(Math.ceil(data.length / 50))
+  const [curData, setCurData] = useState(data);
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    if (search === "") {
+      setCurData(data);
+    } else {
+      setCurData(
+        data.filter((i: any) =>
+          i.name.toLowerCase().includes(search.toLowerCase())
+        )
+      );
+    }
+    setCurPage(1);
+  }, [search]);
+
+  let pages = Array(Math.ceil(data.length / 50))
     .fill(0)
     .map((_, i) => i + 1);
   const start = (curPage - 1) * 50;
   const end = curPage * 50;
-  const paginatedData = useMemo(() => data.slice(start, end), [curPage, data]);
+  const paginatedData = useMemo(
+    () => curData.slice(start, end),
+    [curPage, curData]
+  );
   function VillagerGrid() {
     return (
-      <div className="grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+      <div className="grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-2">
         {paginatedData.map((i: any, index: number) => (
           <motion.div
             whileHover={{
@@ -26,7 +44,7 @@ export default function Villagers({ data }: any) {
               transition: { duration: 0.1 },
             }}
             aria-disabled
-            className="flex flex-col text-center items-center h-64 w-56"
+            className="flex flex-col text-center items-center "
             key={index}
             onClick={() => setModal({ data: i, hidden: false })}
           >
@@ -37,7 +55,7 @@ export default function Villagers({ data }: any) {
             </div>
             <div className="flex flex-col items-center justify-center border-2 border-black bg-white h-full w-full">
               <img
-                className="mx-auto h-36"
+                className="h-36 m-4"
                 src={i.image_url}
                 alt=""
                 loading="lazy"
@@ -50,12 +68,13 @@ export default function Villagers({ data }: any) {
   }
   function Pages() {
     return (
-      <div className="flex w-full justify-center gap-8 p-4 ">
+      <div className="flex w-full justify-center gap-4 p-4 ">
         {pages.map((i) => (
           <button
-            className={`border-2 border-green-400 px-2 text-center w-10 bg-white ${
-              i === curPage && "bg-green-300"
+            className={`border-2 border-green-400 px-2 text-center w-10 ${
+              i === curPage ? "bg-green-300" : "bg-white"
             }`}
+            key={i}
             onClick={() => setCurPage(i)}
           >
             {i}
@@ -64,13 +83,33 @@ export default function Villagers({ data }: any) {
       </div>
     );
   }
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    console.log("refresh prevented");
+  };
   return (
     <div className="text-black capitalize px-40">
-      <Pages />
-      {!modal.hidden && (
-        <VillagerModal data={data} modal={modal} setModal={setModal} />
-      )}
-      {modal.hidden ? <VillagerGrid /> : null}
+      {!modal.hidden && <VillagerModal modal={modal} setModal={setModal} />}
+      {modal.hidden ? (
+        <>
+          <form className="w-full flex justify-center">
+            <input
+              className="border-2 border-black flex justify-center items-center w-96"
+              onChange={(e) => setSearch(e.target.value)}
+            ></input>
+            <button
+              className="border-2 border-black bg-white px-2"
+              onClick={() => setSearch("")}
+              onSubmit={onSubmit}
+              value={"Reset"}
+            >
+              Clear
+            </button>
+          </form>
+          {search === "" && <Pages />}
+          <VillagerGrid />{" "}
+        </>
+      ) : null}
     </div>
   );
 }
