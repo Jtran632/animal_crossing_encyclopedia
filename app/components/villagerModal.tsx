@@ -126,23 +126,23 @@ export default function VillagerModal({ modal, setModal }: any) {
       </div>
     );
   }
-  function GameAppearances() {
-    return (
-      <div className="flex flex-col text-xs gap-2">
-        <div>Mainline Games</div>
-        <div className="grid grid-cols-5 text-center">
-          {modal.data.nh_details !== null &&
-            modal.data.appearances.map((i: string, index: number) => (
-              <div className="border border-black rounded-xl">
-                <div className="p-1" key={index}>
-                  {i}
-                </div>
-              </div>
-            ))}
-        </div>
-      </div>
-    );
-  }
+  // function GameAppearances() {
+  //   return (
+  //     <div className="flex flex-col text-xs gap-2">
+  //       <div>Mainline Games</div>
+  //       <div className="grid grid-cols-5 text-center">
+  //         {modal.data.nh_details !== null &&
+  //           modal.data.appearances.map((i: string, index: number) => (
+  //             <div className="border border-black rounded-xl">
+  //               <div className="p-1" key={index}>
+  //                 {i}
+  //               </div>
+  //             </div>
+  //           ))}
+  //       </div>
+  //     </div>
+  //   );
+  // }
   return (
     <motion.div
       className="absolute m-auto left-0 right-0 top-0 bottom-0 bg-grass border-4 border-orange-300 border-dashed w-1/2 h-2/3 text-xs"
