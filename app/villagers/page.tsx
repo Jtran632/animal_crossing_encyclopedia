@@ -1,6 +1,6 @@
 import Header from "../components/Header";
-import Footer from "../components/Footer";
-import VillagersGrid from "../components/Villagers";
+import FooterComponent from "../components/Footer";
+import Villagers from "../components/Villagers";
 import { villagers } from "animal-crossing";
 
 async function getVillagerData() {
@@ -31,10 +31,10 @@ export default async function VillagerPage() {
         <Header />
         <main className="flex min-h-screen flex-col items-center justify-between px-24 pt-4 bg">
           <div className="">
-            <VillagersGrid data={villagers} extraData={extraData} />
+            <Villagers data={villagers} extraData={extraData} />
           </div>
         </main>
-        <Footer />
+        <FooterComponent />
       </div>
     );
   } catch (error) {

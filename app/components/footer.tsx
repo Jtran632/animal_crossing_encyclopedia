@@ -1,4 +1,4 @@
-export default function Footer() {
+export default function FooterComponent() {
   return (
     <footer className="bg-white text-black text-center p-4">
       <div className="flex justify-center gap-1 text-xs">
