@@ -1,18 +1,25 @@
+"use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
-export default function VillagerModal({ modal, setModal }: any) {
+import { IoMale, IoFemale } from "react-icons/io5";
+import { useState, useEffect } from "react";
+export default function VillagerModal({ modal, setModal, extraInfo }: any) {
   console.log(modal);
-  const games = {
-    "DnM": "Doubutsu no Mori",
-    "DnM+": "Doubutsu no Mori +",
-    "AC": "Animal Crossing",
-    "E_PLUS": "Doubutsu no Mori e+",
-    "iQue": "Dòngwù Sēnlíng",
-    "WW": "Animal Crossing: Wild World",
-    "CF": "Animal Crossing: City Folk",
-    "NL": "Animal Crossing: New Leaf",
-    "NH": "Animal Crossing: New Horizons",
-  };
+  // const games = {
+  //   "DnM": "Doubutsu no Mori",
+  //   "DnM+": "Doubutsu no Mori +",
+  //   "AC": "Animal Crossing",
+  //   "E_PLUS": "Doubutsu no Mori e+",
+  //   "iQue": "Dòngwù Sēnlíng",
+  //   "WW": "Animal Crossing: Wild World",
+  //   "CF": "Animal Crossing: City Folk",
+  //   "NL": "Animal Crossing: New Leaf",
+  //   "NH": "Animal Crossing: New Horizons",
+  // };
+
+  useEffect(() => {
+    console.log(extraInfo, "extraInfo");
+  }, [extraInfo]);
+
   function suffix(n: number) {
     if (n % 100 >= 11 && n % 100 <= 13) {
       return "th";
@@ -63,13 +70,14 @@ export default function VillagerModal({ modal, setModal }: any) {
             <div className="border-2 px-2 py-1 font-bold bg-green-100">
               Sign
             </div>
-            <div className="border-2 px-2 py-1 bg-white">{modal.data.sign}</div>
+            <div className="border-2 px-2 py-1 bg-white">{extraInfo.sign}</div>
           </div>
           <div className="grid w-1/4">
             <div className="border-2 rounded-tr-xl px-2 py-1 font-bold bg-green-100">
               Gender
             </div>
-            <div className="border-2 rounded-br-xl px-2 py-1 bg-white">
+            <div className="flex items-center border-2 rounded-br-xl px-2 py-1 bg-white gap-2">
+              {modal.data.gender === "Male" ? <IoMale /> : <IoFemale />}
               {modal.data.gender}
             </div>
           </div>
@@ -82,9 +90,9 @@ export default function VillagerModal({ modal, setModal }: any) {
                 Birthday
               </div>
               <div className="flex col-span-2 justify-center gap-1 bg-white">
-                <div>{modal.data.birthday_month}</div>
+                <div>{extraInfo.birthday_month}</div>
                 <div>
-                  {modal.data.birthday_day}
+                  {extraInfo.birthday_day}
                   {a}
                 </div>
               </div>
@@ -96,28 +104,39 @@ export default function VillagerModal({ modal, setModal }: any) {
               <div className="bg-green-100 border-r-2 border-green text-start px-2">
                 Debut
               </div>
-              <div className="px-2 bg-white col-span-2">{modal.data.debut}</div>
+              <div className="px-2 bg-white col-span-2">{extraInfo.debut}</div>
             </div>
           )}
           {/* clothing */}
-          {modal.data.clothing !== "" && (
+          {modal.data.defaultClothing !== "" && (
             <div className="grid grid-cols-3 border-2 rounded-xl ">
               <div className="bg-green-100 border-r-2 border-green text-start px-2">
                 Clothing
               </div>
               <div className="px-2 bg-white col-span-2">
-                {modal.data.clothing}
+                {modal.data.defaultClothing}
+              </div>
+            </div>
+          )}
+          {/* umbrella*/}
+          {modal.data.defaultUmbrella !== "" && (
+            <div className="grid grid-cols-3 border-2 rounded-xl ">
+              <div className="bg-green-100 border-r-2 border-green text-start px-2">
+                Umbrella
+              </div>
+              <div className="px-2 bg-white col-span-2">
+                {modal.data.defaultUmbrella}
               </div>
             </div>
           )}
           {/* Catchphrase */}
-          {modal.data.phrase !== "" && (
+          {modal.data.catchphrase !== "" && (
             <div className="grid grid-cols-3 border-2 rounded-xl ">
               <div className="bg-green-100 border-r-2 border-green text-start px-2">
                 Catchphrase
               </div>
               <div className="px-2 bg-white col-span-2">
-                {modal.data.phrase}
+                {modal.data.catchphrase}
               </div>
             </div>
           )}
@@ -167,7 +186,7 @@ export default function VillagerModal({ modal, setModal }: any) {
               {modal.data.nh_details !== null ? (
                 <div className="flex justify-end items-center mb-2 border-4 border-white rounded-full divide-x-2 divide-white">
                   <img
-                    src={modal.data?.nh_details?.icon_url}
+                    src={modal.data?.iconImage}
                     alt={modal.data.name}
                     className="h-10 bg-green-200 rounded-full rounded-r-none"
                   ></img>
@@ -186,8 +205,8 @@ export default function VillagerModal({ modal, setModal }: any) {
               )}
             </div>
             <img
-              className="h-36"
-              src={modal.data.image_url}
+              className="h-44 rounded-xl"
+              src={extraInfo.image_url}
               alt={modal.data.name}
             />
             <GeneralInfo />

@@ -2,15 +2,17 @@
 import { motion } from "framer-motion";
 /*eslint-disable @next/next/no-img-element */
 import { useState, useEffect, useMemo } from "react";
-import VillagerModal from "./villagerModal";
-export default function Villagers({ data }: any) {
-  // console.log(data);
+import VillagerModal from "./VillagerModal";
+import { villagers } from "animal-crossing";
+export default function Villagers({ data, extraData }: any) {
+  // console.log(extraData, "extraData");
   const [curPage, setCurPage] = useState(1);
   const [modal, setModal] = useState({
     data: data,
     hidden: true,
   });
   const [curData, setCurData] = useState(data);
+  const [extraInfo, setExtraInfo] = useState({});
   const [search, setSearch] = useState("");
   useEffect(() => {
     if (search === "") {
@@ -25,9 +27,16 @@ export default function Villagers({ data }: any) {
     setCurPage(1);
   }, [search]);
 
+  useEffect(() => {
+    extraData.filter((i: any) =>
+      modal.data.name === i.name ? setExtraInfo(i) : null
+    );
+  }, [modal.data.name]);
+
   let pages = Array(Math.ceil(data.length / 50))
     .fill(0)
     .map((_, i) => i + 1);
+
   const start = (curPage - 1) * 50;
   const end = curPage * 50;
   const paginatedData = useMemo(
@@ -36,7 +45,7 @@ export default function Villagers({ data }: any) {
   );
   function VillagerGrid() {
     return (
-      <div className="grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-2">
+      <div className="grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 my-2">
         {paginatedData.map((i: any, index: number) => (
           <motion.div
             whileHover={{
@@ -55,8 +64,8 @@ export default function Villagers({ data }: any) {
             </div>
             <div className="flex flex-col items-center justify-center border-2 border-black bg-white h-full w-full">
               <img
-                className="h-36 m-4"
-                src={i.image_url}
+                className="h-32"
+                src={i.photoImage}
                 alt=""
                 loading="lazy"
               ></img>
@@ -67,6 +76,7 @@ export default function Villagers({ data }: any) {
     );
   }
   function Pages() {
+    // console.log("villagers", villagers);
     return (
       <div className="flex w-full justify-center gap-4 p-4 ">
         {pages.map((i) => (
@@ -89,7 +99,13 @@ export default function Villagers({ data }: any) {
   };
   return (
     <div className="text-black capitalize px-40">
-      {!modal.hidden && <VillagerModal modal={modal} setModal={setModal} />}
+      {!modal.hidden && (
+        <VillagerModal
+          modal={modal}
+          setModal={setModal}
+          extraInfo={extraInfo}
+        />
+      )}
       {modal.hidden ? (
         <>
           <form className="w-full flex justify-center">
@@ -107,7 +123,7 @@ export default function Villagers({ data }: any) {
             </button>
           </form>
           {search === "" && <Pages />}
-          <VillagerGrid />{" "}
+          <VillagerGrid />
         </>
       ) : null}
     </div>
