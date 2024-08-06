@@ -25,13 +25,13 @@ export default function Villagers({ data, extraData }: any) {
       );
     }
     setCurPage(1);
-  }, [search]);
+  }, [search, data]);
 
   useEffect(() => {
     extraData.filter((i: any) =>
       modal.data.name === i.name ? setExtraInfo(i) : null
     );
-  }, [modal.data.name]);
+  }, [modal.data.name, extraData]);
 
   let pages = Array(Math.ceil(data.length / 50))
     .fill(0)
@@ -41,7 +41,7 @@ export default function Villagers({ data, extraData }: any) {
   const end = curPage * 50;
   const paginatedData = useMemo(
     () => curData.slice(start, end),
-    [curPage, curData]
+    [curPage, curData, start, end]
   );
   function VillagerGrid() {
     return (

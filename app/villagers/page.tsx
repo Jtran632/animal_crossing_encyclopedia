@@ -2,6 +2,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import VillagersGrid from "../components/Villagers";
 import { villagers } from "animal-crossing";
+
 async function getVillagerData() {
   const url = `https://api.nookipedia.com/villagers?nhdetails=true`;
 

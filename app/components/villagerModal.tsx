@@ -1,4 +1,5 @@
 "use client";
+/*eslint-disable @next/next/no-img-element */
 import { motion } from "framer-motion";
 import { IoMale, IoFemale } from "react-icons/io5";
 import { useState, useEffect } from "react";
