@@ -1,6 +1,6 @@
 "use client";
-import { motion } from "framer-motion";
 /*eslint-disable @next/next/no-img-element */
+import { motion } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 import VillagerModal from "./VillagerModal";
 import { villagers } from "animal-crossing";

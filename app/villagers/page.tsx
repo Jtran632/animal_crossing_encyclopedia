@@ -1,3 +1,4 @@
+"use server";
 import Header from "../components/Header";
 import FooterComponent from "../components/Footer";
 import Villagers from "../components/Villagers";
