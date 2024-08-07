@@ -2,7 +2,7 @@ import Link from "next/link";
 import { IoHome, IoFish } from "react-icons/io5";
 export default function Header() {
   return (
-    <div className="flex bg-white">
+    <div className="flex bg-white border-b border-black">
       <Link href="/">
         <IoHome size={32} className="text-orange-600" />
       </Link>

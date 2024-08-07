@@ -3,23 +3,45 @@
 import { motion } from "framer-motion";
 import { IoMale, IoFemale } from "react-icons/io5";
 import { useState, useEffect } from "react";
+import { items } from "animal-crossing";
+
+interface Item {
+  url: string;
+  name: string;
+}
+interface itemPicsI {
+  umbrella: Item;
+  wallpaper: Item;
+  flooring: Item;
+}
 export default function VillagerModal({ modal, setModal, extraInfo }: any) {
-  console.log(modal);
-  // const games = {
-  //   "DnM": "Doubutsu no Mori",
-  //   "DnM+": "Doubutsu no Mori +",
-  //   "AC": "Animal Crossing",
-  //   "E_PLUS": "Doubutsu no Mori e+",
-  //   "iQue": "Dòngwù Sēnlíng",
-  //   "WW": "Animal Crossing: Wild World",
-  //   "CF": "Animal Crossing: City Folk",
-  //   "NL": "Animal Crossing: New Leaf",
-  //   "NH": "Animal Crossing: New Horizons",
-  // };
+  const [hover, setHover] = useState(false);
+  const [hoverText, setHoverText] = useState("");
+  const [itemPics, setItemPics] = useState<itemPicsI>({
+    "umbrella": { "url": "", "name": "" },
+    "wallpaper": { "url": "", "name": "" },
+    "flooring": { "url": "", "name": "" },
+  });
+  console.log("modalData", modal);
 
   useEffect(() => {
     console.log(extraInfo, "extraInfo");
     window.scrollTo(0, 0);
+    function getItem(s: string) {
+      return items.find((i) => i.name === modal.data[s]);
+    }
+    let umbrella = getItem("defaultUmbrella");
+    let wallpaper = getItem("wallpaper");
+    let flooring = getItem("flooring");
+    let result = {
+      umbrella: {
+        url: umbrella?.storageImage ?? "",
+        name: umbrella?.name ?? "",
+      },
+      wallpaper: { url: wallpaper?.image ?? "", name: wallpaper?.name ?? "" },
+      flooring: { url: flooring?.image ?? "", name: flooring?.name ?? "" },
+    };
+    setItemPics({ ...itemPics, ...result });
   }, [extraInfo]);
 
   function suffix(n: number) {
@@ -37,186 +59,152 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
         return "th";
     }
   }
-
-  function GeneralInfo() {
-    let a = suffix(modal.data.birthday_day);
-    return (
-      <div className="flex flex-col text-xs text-center w-96 gap-1 border-4 border-white rounded-md mt-2 p-2 bg-emerald-200">
-        {modal.data.id ? (
-          <div className="w-full flex justify-end">
-            <div className="border border-orange-300 rounded-md bg-white px-2 w-fit">
-              {modal.data.id}
+  function GeneralItem(s: string, extraInfoUsed: boolean, topInfo: boolean) {
+    let info = extraInfoUsed ? extraInfo[s] : modal.data[s];
+    if (topInfo) {
+      return (
+        <div className="grid w-full shadow-sm shadow-slate-500">
+          <div className="px-2 py-1 font-bold bg-green-200 capitalize">{s}</div>
+          {s === "gender" ? (
+            <div className="flex items-center px-2 py-1 border-t-2 border-orange-100 bg-white gap-2">
+              {info === "Male" ? <IoMale /> : <IoFemale />}
+              {info}
             </div>
-          </div>
-        ) : (
-          <div></div>
-        )}
-        <div className="flex w-full">
-          <div className="grid w-1/4">
-            <div className="border-2 rounded-tl-xl px-2 py-1 font-bold bg-green-100">
-              Species
+          ) : (
+            <div className="px-2 py-1 bg-white border-t-2 border-orange-100">
+              {info}
             </div>
-            <div className="border-2 rounded-bl-xl px-2 py-1 bg-white">
-              {modal.data.species}
-            </div>
-          </div>
-          <div className="grid w-1/4">
-            <div className="border-2 py-1 font-bold bg-green-100">
-              Personality
-            </div>
-            <div className="border-2 px-2 py-1 bg-white">
-              {modal.data.personality}
-            </div>
-          </div>
-          <div className="grid w-1/4">
-            <div className="border-2 px-2 py-1 font-bold bg-green-100">
-              Sign
-            </div>
-            <div className="border-2 px-2 py-1 bg-white">{extraInfo.sign}</div>
-          </div>
-          <div className="grid w-1/4">
-            <div className="border-2 rounded-tr-xl px-2 py-1 font-bold bg-green-100">
-              Gender
-            </div>
-            <div className="flex items-center border-2 rounded-br-xl px-2 py-1 bg-white gap-2">
-              {modal.data.gender === "Male" ? <IoMale /> : <IoFemale />}
-              {modal.data.gender}
-            </div>
-          </div>
+          )}
         </div>
-        <div className="flex flex-col gap-1">
-          {/* birthday */}
-          {modal.data.birthday_month !== "" && (
-            <div className="grid grid-cols-3 border-2 rounded-xl ">
-              <div className="bg-green-100 border-r-2 border-green text-start px-2">
-                Birthday
+      );
+    } else {
+      let a = suffix(modal.data.birthday_day);
+      return (
+        <>
+          {info !== "" && (
+            <div className="grid grid-cols-3 border-2 border-orange-100 rounded-md shadow-sm shadow-slate-500">
+              <div className="bg-green-200 border-r-2 border-r-orange-100 border-green text-start px-2">
+                {s === "defaultUmbrella" ? "Umbrella" : s}
               </div>
+              {/* birthday case */}
               <div className="flex col-span-2 justify-center gap-1 bg-white">
-                <div>{extraInfo.birthday_month}</div>
-                <div>
-                  {extraInfo.birthday_day}
-                  {a}
-                </div>
+                {s.includes("birthday") ? (
+                  <>
+                    {extraInfo.birthday_month}
+                    <div>
+                      {extraInfo.birthday_day}
+                      {a}
+                    </div>
+                  </>
+                ) : (
+                  info
+                )}
               </div>
             </div>
           )}
-          {/* debut */}
-          {modal.data.debut !== "" && (
-            <div className="grid grid-cols-3 border-2 rounded-xl ">
-              <div className="bg-green-100 border-r-2 border-green text-start px-2">
-                Debut
-              </div>
-              <div className="px-2 bg-white col-span-2">{extraInfo.debut}</div>
-            </div>
-          )}
-          {/* clothing */}
-          {modal.data.defaultClothing !== "" && (
-            <div className="grid grid-cols-3 border-2 rounded-xl ">
-              <div className="bg-green-100 border-r-2 border-green text-start px-2">
-                Clothing
-              </div>
-              <div className="px-2 bg-white col-span-2">
-                {modal.data.defaultClothing}
-              </div>
-            </div>
-          )}
-          {/* umbrella*/}
-          {modal.data.defaultUmbrella !== "" && (
-            <div className="grid grid-cols-3 border-2 rounded-xl ">
-              <div className="bg-green-100 border-r-2 border-green text-start px-2">
-                Umbrella
-              </div>
-              <div className="px-2 bg-white col-span-2">
-                {modal.data.defaultUmbrella}
-              </div>
-            </div>
-          )}
-          {/* Catchphrase */}
-          {modal.data.catchphrase !== "" && (
-            <div className="grid grid-cols-3 border-2 rounded-xl ">
-              <div className="bg-green-100 border-r-2 border-green text-start px-2">
-                Catchphrase
-              </div>
-              <div className="px-2 bg-white col-span-2">
-                {modal.data.catchphrase}
-              </div>
-            </div>
-          )}
+        </>
+      );
+    }
+  }
+  function GeneralInfo() {
+    return (
+      <div className="flex flex-col text-xs text-center w-96 gap-1 border-t-4 border-orange-100 mt-2 p-2 bg-emerald-200">
+        {/*top info */}
+        <div className="flex  border-4 border-orange-100 rounded-md">
+          {GeneralItem("species", false, true)}
+          {GeneralItem("personality", false, true)}
+          {GeneralItem("personality", true, true)}
+          {GeneralItem("gender", false, true)}
         </div>
-        {/* <GameAppearances /> */}
+        {/* bottom info */}
+        <div className="flex flex-col gap-1">
+          {GeneralItem("birthday", true, false)}
+          {GeneralItem("debut", true, false)}
+          {GeneralItem("hobby", false, false)}
+          {GeneralItem("favoriteSong", false, false)}
+          {GeneralItem("defaultClothing", false, false)}
+          {GeneralItem("defaultUmbrella", false, false)}
+          {GeneralItem("catchphrase", false, false)}
+          {GeneralItem("favoriteSaying", false, false)}
+        </div>
       </div>
     );
   }
-  // function GameAppearances() {
-  //   return (
-  //     <div className="flex flex-col text-xs gap-2">
-  //       <div>Mainline Games</div>
-  //       <div className="grid grid-cols-5 text-center">
-  //         {modal.data.nh_details !== null &&
-  //           modal.data.appearances.map((i: string, index: number) => (
-  //             <div className="border border-black rounded-xl">
-  //               <div className="p-1" key={index}>
-  //                 {i}
-  //               </div>
-  //             </div>
-  //           ))}
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  function RenderItemPics() {
+    let imageNames: itemPicsKey[] = ["umbrella", "wallpaper", "flooring"];
+    type itemPicsKey = keyof itemPicsI;
+    return (
+      <div className="flex items-center w-6 gap-1">
+        {imageNames.map((i: itemPicsKey, index: number) => (
+          <img
+            key={index}
+            className="hover:scale-125"
+            src={itemPics[i].url}
+            alt={itemPics[i].name}
+            onMouseEnter={() => {
+              setHover(true);
+              setHoverText(itemPics[i].name);
+            }}
+            onMouseLeave={() => setHover(false)}
+          />
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className="flex bg w-full h-full">
-      <motion.div
-        className="absolute m-auto left-0 right-0 top-0 bottom-0 bg-grass border-4 border-orange-300 border-dashed w-1/2 h-2/3 text-xs"
-        whileInView={{
-          opacity: [0.5, 1],
-          scale: [0.5, 1.25],
-          transition: { duration: 0.25 },
-        }}
-      >
-        <div className="h-full">
-          <div className="grid  divide-black h-full">
-            <div className="flex flex-col items-center border-2 ">
-              <div className="flex justify-end w-full px-4 pt-2">
-                <button
-                  onClick={() => setModal({ ...modal, hidden: true })}
-                  className=" bg-white border border-black rounded-full p-1 px-2"
-                >
-                  X
-                </button>
-              </div>
-              <div className="flex justify-center items-center w-full px-10">
-                {modal.data.nh_details !== null ? (
-                  <div className="flex justify-end items-center mb-2 border-4 border-white rounded-full divide-x-2 divide-white">
-                    <img
-                      src={modal.data?.iconImage}
-                      alt={modal.data.name}
-                      className="h-10 bg-green-200 rounded-full rounded-r-none"
-                    ></img>
-                    <div
-                      className={`flex items-center justify-center text-2xl font-bold px-2 h-10 bg-orange-300 text-white rounded-full rounded-l-none`}
-                    >
-                      {modal.data.name}
-                    </div>
-                  </div>
-                ) : (
-                  <div
-                    className={`text-2xl font-bold border-4 border-white rounded-full px-2  h-10 bg-orange-400 text-white`}
-                  >
-                    {modal.data.name}
-                  </div>
-                )}
-              </div>
-              <img
-                className="h-44 rounded-xl"
-                src={extraInfo.image_url}
-                alt={modal.data.name}
-              />
-              <GeneralInfo />
-            </div>
+    <motion.div
+      className=" bg-green-300 border-8 border-orange-100 rounded-xl  text-xs shadow-slate-500 shadow-sm text-black"
+      whileInView={{
+        opacity: [0.5, 1],
+        scale: [0.5, 1.25],
+        transition: { duration: 0.15 },
+      }}
+    >
+      <div className="m-2 border-2 rounded-md border-orange-100">
+        <div className="flex flex-col items-center">
+          <div className="flex justify-between w-full px-2 pt-2">
+            {RenderItemPics()}
+            <button
+              onClick={() => setModal({ data: {}, hidden: true })}
+              className=" bg-white border-2 border-orange-200 rounded-full h-6 w-6 font-thin text-orange-400 shadow-sm shadow-slate-400 hover:scale-125"
+            >
+              X
+            </button>
           </div>
+          <div className="flex w-full h-2 text-[8px] px-1">
+            {hover && hoverText}
+          </div>
+          <div className="justify-center items-center px-10">
+            {modal.data.nh_details !== null ? (
+              <div className="flex justify-end items-center mb-2 border-4 border-white rounded-full divide-x-2 divide-white shadow-sm shadow-slate-400">
+                <img
+                  src={modal.data?.iconImage}
+                  alt={modal.data.name}
+                  className="h-10 bg-green-200 rounded-full rounded-r-none px-1"
+                ></img>
+                <div
+                  className={`flex items-center justify-center text-2xl font-bold px-2 h-10 bg-orange-300 text-white rounded-full rounded-l-none`}
+                >
+                  {modal.data.name}
+                </div>
+              </div>
+            ) : (
+              <div
+                className={`text-2xl font-bold border-4 border-white rounded-full px-2  h-10 bg-orange-400 text-white`}
+              >
+                {modal.data.name}
+              </div>
+            )}
+          </div>
+          <img
+            className="h-36 rounded-xl"
+            src={extraInfo.image_url}
+            alt={modal.data.name}
+          />
+          <GeneralInfo />
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   );
 }

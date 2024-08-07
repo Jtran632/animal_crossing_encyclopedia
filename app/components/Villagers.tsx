@@ -3,11 +3,10 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 import VillagerModal from "./VillagerModal";
-import { villagers } from "animal-crossing";
-import { IoArrowUp } from "react-icons/io5";
+import ScrollUp from "./ScrollUp";
 export default function Villagers({ data, extraData }: any) {
-  console.log(data, "data");
-  // console.log(extraData, "extraData");
+  console.log(data, "animalcrossing-pkg data");
+  console.log(extraData, "nookpedia data");
   const [curPage, setCurPage] = useState(1);
   const [modal, setModal] = useState({
     data: data,
@@ -47,7 +46,7 @@ export default function Villagers({ data, extraData }: any) {
   );
   function VillagerGrid() {
     return (
-      <div className="grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 my-2">
+      <div className="grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 grid-cols-5 gap-4 my-2">
         {paginatedData.map((i: any, index: number) => (
           <motion.div
             whileHover={{
@@ -59,18 +58,22 @@ export default function Villagers({ data, extraData }: any) {
             key={index}
             onClick={() => setModal({ data: i, hidden: false })}
           >
-            <div className="flex justify-between w-full">
+            <div className="flex w-full">
               <div
                 style={{
                   backgroundColor: i.bubbleColor,
-                  filter: "brightness(.)",
                 }}
-                className={`border border-black w-full rounded-tl-md rounded-tr-md`}
+                className={`border border-black border-b-0 w-full rounded-tl-md rounded-tr-md`}
               >
                 {i.name}
               </div>
             </div>
-            <div className="flex flex-col items-center justify-center border-2 border-black bg-white h-full w-full">
+            <div
+              style={{
+                backgroundColor: i.bubbleColor,
+              }}
+              className="flex flex-col items-center justify-center border-2 border-t border-black bg-white h-full w-full"
+            >
               <img
                 className="h-32"
                 src={i.photoImage}
@@ -86,10 +89,10 @@ export default function Villagers({ data, extraData }: any) {
   function Pages() {
     // console.log("villagers", villagers);
     return (
-      <div className="flex w-full justify-center gap-4 p-4 ">
+      <div className="flex justify-center gap-4 p-4 ">
         {pages.map((i) => (
           <button
-            className={`border-2 border-green-400 px-2 text-center w-10 ${
+            className={`border-2 border-green-400 px-1 text-center ${
               i === curPage ? "bg-green-300" : "bg-white"
             }`}
             key={i}
@@ -106,7 +109,32 @@ export default function Villagers({ data, extraData }: any) {
     console.log("refresh prevented");
   };
   return (
-    <div className="text-black capitalize px-40">
+    <>
+      {modal.hidden && (
+        <div
+          className={`text-black capitalize ${
+            modal.hidden === true ? "" : "px-0"
+          } p-2 min-h-screen`}
+        >
+          <>
+            <div className="flex justify-center ">
+              <input
+                className="border-2 border-black flex justify-center items-center "
+                onChange={(e) => setSearch(e.target.value)}
+              ></input>
+              <button
+                className="border-2 border-black bg-white px-2"
+                onClick={() => setSearch("")}
+              >
+                Clear
+              </button>
+            </div>
+            {search === "" && <Pages />}
+            <VillagerGrid />
+            {search === "" && modal.hidden && <ScrollUp />}
+          </>
+        </div>
+      )}
       {!modal.hidden && (
         <VillagerModal
           modal={modal}
@@ -114,34 +142,6 @@ export default function Villagers({ data, extraData }: any) {
           extraInfo={extraInfo}
         />
       )}
-      {modal.hidden ? (
-        <>
-          <form className="w-full flex justify-center">
-            <input
-              className="border-2 border-black flex justify-center items-center w-96"
-              onChange={(e) => setSearch(e.target.value)}
-            ></input>
-            <button
-              className="border-2 border-black bg-white px-2"
-              onClick={() => setSearch("")}
-              onSubmit={onSubmit}
-              value={"Reset"}
-            >
-              Clear
-            </button>
-          </form>
-          {search === "" && <Pages />}
-          <VillagerGrid />
-          <div className="flex justify-end w-full">
-            <button
-              onClick={() => window.scrollTo(0, 0)}
-              className="border-2 border-black"
-            >
-              <IoArrowUp size={32} />
-            </button>
-          </div>
-        </>
-      ) : null}
-    </div>
+    </>
   );
 }

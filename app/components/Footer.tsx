@@ -1,6 +1,6 @@
 export default function FooterComponent() {
   return (
-    <footer className="bg-white text-black text-center p-4">
+    <footer className="bg-white text-black text-center p-4 border-t border-black">
       <div className="flex justify-center gap-1 text-xs">
         <div>Data is provided by</div>
         <a
