@@ -28,9 +28,9 @@ export default async function VillagerPage() {
   try {
     let extraData = await getVillagerData();
     return (
-      <div className="divide-y-2">
+      <div className="divide-y-2 font-mono">
         <Header />
-        <main className="flex min-h-screen flex-col items-center justify-between px-24 pt-4 bg">
+        <main className="flex min-h-screen justify-center items-center pt-4 bg">
           <div className="">
             <Villagers data={villagers} extraData={extraData} />
           </div>

@@ -19,6 +19,7 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
 
   useEffect(() => {
     console.log(extraInfo, "extraInfo");
+    window.scrollTo(0, 0);
   }, [extraInfo]);
 
   function suffix(n: number) {
@@ -164,56 +165,58 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
   //   );
   // }
   return (
-    <motion.div
-      className="absolute m-auto left-0 right-0 top-0 bottom-0 bg-grass border-4 border-orange-300 border-dashed w-1/2 h-2/3 text-xs"
-      whileInView={{
-        opacity: [0.5, 1],
-        scale: [0.5, 1.25],
-        transition: { duration: 0.25 },
-      }}
-    >
-      <div className="h-full">
-        <div className="grid  divide-black h-full">
-          <div className="flex flex-col items-center border-2 ">
-            <div className="flex justify-end w-full px-4 pt-2">
-              <button
-                onClick={() => setModal({ ...modal, hidden: true })}
-                className=" bg-white border border-black rounded-full p-1 px-2"
-              >
-                X
-              </button>
-            </div>
-            <div className="flex justify-center items-center w-full px-10">
-              {modal.data.nh_details !== null ? (
-                <div className="flex justify-end items-center mb-2 border-4 border-white rounded-full divide-x-2 divide-white">
-                  <img
-                    src={modal.data?.iconImage}
-                    alt={modal.data.name}
-                    className="h-10 bg-green-200 rounded-full rounded-r-none"
-                  ></img>
+    <div className="flex bg w-full h-full">
+      <motion.div
+        className="absolute m-auto left-0 right-0 top-0 bottom-0 bg-grass border-4 border-orange-300 border-dashed w-1/2 h-2/3 text-xs"
+        whileInView={{
+          opacity: [0.5, 1],
+          scale: [0.5, 1.25],
+          transition: { duration: 0.25 },
+        }}
+      >
+        <div className="h-full">
+          <div className="grid  divide-black h-full">
+            <div className="flex flex-col items-center border-2 ">
+              <div className="flex justify-end w-full px-4 pt-2">
+                <button
+                  onClick={() => setModal({ ...modal, hidden: true })}
+                  className=" bg-white border border-black rounded-full p-1 px-2"
+                >
+                  X
+                </button>
+              </div>
+              <div className="flex justify-center items-center w-full px-10">
+                {modal.data.nh_details !== null ? (
+                  <div className="flex justify-end items-center mb-2 border-4 border-white rounded-full divide-x-2 divide-white">
+                    <img
+                      src={modal.data?.iconImage}
+                      alt={modal.data.name}
+                      className="h-10 bg-green-200 rounded-full rounded-r-none"
+                    ></img>
+                    <div
+                      className={`flex items-center justify-center text-2xl font-bold px-2 h-10 bg-orange-300 text-white rounded-full rounded-l-none`}
+                    >
+                      {modal.data.name}
+                    </div>
+                  </div>
+                ) : (
                   <div
-                    className={`text-2xl font-bold px-2 h-10 bg-orange-300 text-white rounded-full rounded-l-none`}
+                    className={`text-2xl font-bold border-4 border-white rounded-full px-2  h-10 bg-orange-400 text-white`}
                   >
                     {modal.data.name}
                   </div>
-                </div>
-              ) : (
-                <div
-                  className={`text-2xl font-bold border-4 border-white rounded-full px-2  h-10 bg-orange-400 text-white`}
-                >
-                  {modal.data.name}
-                </div>
-              )}
+                )}
+              </div>
+              <img
+                className="h-44 rounded-xl"
+                src={extraInfo.image_url}
+                alt={modal.data.name}
+              />
+              <GeneralInfo />
             </div>
-            <img
-              className="h-44 rounded-xl"
-              src={extraInfo.image_url}
-              alt={modal.data.name}
-            />
-            <GeneralInfo />
           </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }

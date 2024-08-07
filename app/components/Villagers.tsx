@@ -4,7 +4,9 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 import VillagerModal from "./VillagerModal";
 import { villagers } from "animal-crossing";
+import { IoArrowUp } from "react-icons/io5";
 export default function Villagers({ data, extraData }: any) {
+  console.log(data, "data");
   // console.log(extraData, "extraData");
   const [curPage, setCurPage] = useState(1);
   const [modal, setModal] = useState({
@@ -58,7 +60,13 @@ export default function Villagers({ data, extraData }: any) {
             onClick={() => setModal({ data: i, hidden: false })}
           >
             <div className="flex justify-between w-full">
-              <div className="border border-black w-full bg-white">
+              <div
+                style={{
+                  backgroundColor: i.bubbleColor,
+                  filter: "brightness(.)",
+                }}
+                className={`border border-black w-full rounded-tl-md rounded-tr-md`}
+              >
                 {i.name}
               </div>
             </div>
@@ -124,6 +132,14 @@ export default function Villagers({ data, extraData }: any) {
           </form>
           {search === "" && <Pages />}
           <VillagerGrid />
+          <div className="flex justify-end w-full">
+            <button
+              onClick={() => window.scrollTo(0, 0)}
+              className="border-2 border-black"
+            >
+              <IoArrowUp size={32} />
+            </button>
+          </div>
         </>
       ) : null}
     </div>
