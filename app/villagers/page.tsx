@@ -31,7 +31,7 @@ export default async function VillagerPage() {
       <div className="flex flex-col bg font-mono">
         <Header />
         <main className="">
-          <div className="flex justify-center items-center min-h-screen">
+          <div className="flex justify-center items-start min-h-screen">
             <Villagers data={villagers} extraData={extraData} />
           </div>
         </main>

@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import VillagerModal from "./VillagerModal";
 import ScrollUp from "./ScrollUp";
 export default function Villagers({ data, extraData }: any) {
-  console.log(data, "animalcrossing-pkg data");
+  // console.log(data, "animalcrossing-pkg data");
   console.log(extraData, "nookpedia data");
   const [curPage, setCurPage] = useState(1);
   const [modal, setModal] = useState({
@@ -89,10 +89,10 @@ export default function Villagers({ data, extraData }: any) {
   function Pages() {
     // console.log("villagers", villagers);
     return (
-      <div className="flex justify-center gap-4 p-4 ">
+      <div className="flex justify-center gap-1 p-4 ">
         {pages.map((i) => (
           <button
-            className={`border-2 border-green-400 px-1 text-center ${
+            className={`border-2 border-green-400 px-1 text-center rounded-md ${
               i === curPage ? "bg-green-300" : "bg-white"
             }`}
             key={i}
@@ -104,36 +104,30 @@ export default function Villagers({ data, extraData }: any) {
       </div>
     );
   }
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    console.log("refresh prevented");
-  };
   return (
-    <>
+    <div
+      className={`text-black capitalize ${
+        modal.hidden === true ? "" : "px-0"
+      } p-2 h-min-screen`}
+    >
       {modal.hidden && (
-        <div
-          className={`text-black capitalize ${
-            modal.hidden === true ? "" : "px-0"
-          } p-2 min-h-screen`}
-        >
-          <>
-            <div className="flex justify-center ">
-              <input
-                className="border-2 border-black flex justify-center items-center "
-                onChange={(e) => setSearch(e.target.value)}
-              ></input>
-              <button
-                className="border-2 border-black bg-white px-2"
-                onClick={() => setSearch("")}
-              >
-                Clear
-              </button>
-            </div>
-            {search === "" && <Pages />}
-            <VillagerGrid />
-            {search === "" && modal.hidden && <ScrollUp />}
-          </>
-        </div>
+        <>
+          <div className="flex justify-center">
+            <input
+              className="border-2 border-black flex justify-center items-center "
+              onChange={(e) => setSearch(e.target.value)}
+            ></input>
+            <button
+              className="border-2 border-black bg-white px-2"
+              onClick={() => setSearch("")}
+            >
+              Clear
+            </button>
+          </div>
+          {search === "" && <Pages />}
+          <VillagerGrid />
+          {search === "" && modal.hidden && <ScrollUp />}
+        </>
       )}
       {!modal.hidden && (
         <VillagerModal
@@ -142,6 +136,6 @@ export default function Villagers({ data, extraData }: any) {
           extraInfo={extraInfo}
         />
       )}
-    </>
+    </div>
   );
 }

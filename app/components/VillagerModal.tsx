@@ -67,7 +67,11 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
           <div className="px-2 py-1 font-bold bg-green-200 capitalize">{s}</div>
           {s === "gender" ? (
             <div className="flex items-center px-2 py-1 border-t-2 border-orange-100 bg-white gap-2">
-              {info === "Male" ? <IoMale /> : <IoFemale />}
+              {info === "Male" ? (
+                <IoMale className="text-blue-400" />
+              ) : (
+                <IoFemale className="text-red-500" />
+              )}
               {info}
             </div>
           ) : (
@@ -80,14 +84,15 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
     } else {
       let a = suffix(modal.data.birthday_day);
       return (
-        <>
+        <div className="flex justify-center w-full">
           {info !== "" && (
-            <div className="grid grid-cols-3 border-2 border-orange-100 rounded-md shadow-sm shadow-slate-500">
-              <div className="bg-green-200 border-r-2 border-r-orange-100 border-green text-start px-2">
-                {s === "defaultUmbrella" ? "Umbrella" : s}
+            <div className="flex w-full border-2 border-orange-100 rounded-md shadow-sm shadow-slate-500">
+              <div className="w-1/3 bg-green-200 border-r-2 p-2  flex items-center justify-start">
+                {s.replace("favorite", "").replace("default", "")}
               </div>
+
               {/* birthday case */}
-              <div className="flex col-span-2 justify-center gap-1 bg-white">
+              <div className="w-2/3 gap-1 bg-white text-pretty p-2">
                 {s.includes("birthday") ? (
                   <>
                     {extraInfo.birthday_month}
@@ -102,15 +107,15 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
               </div>
             </div>
           )}
-        </>
+        </div>
       );
     }
   }
   function GeneralInfo() {
     return (
-      <div className="flex flex-col text-xs text-center w-96 gap-1 border-t-4 border-orange-100 mt-2 p-2 bg-emerald-200">
+      <div className="flex flex-col text-xs text-center gap-1 border-t-4 border-orange-100 mt-2 p-2 bg-emerald-200">
         {/*top info */}
-        <div className="flex  border-4 border-orange-100 rounded-md">
+        <div className="flex border-4 border-orange-100 rounded-md">
           {GeneralItem("species", false, true)}
           {GeneralItem("personality", false, true)}
           {GeneralItem("personality", true, true)}
@@ -154,10 +159,10 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
 
   return (
     <motion.div
-      className=" bg-green-300 border-8 border-orange-100 rounded-xl  text-xs shadow-slate-500 shadow-sm text-black"
+      className=" bg-green-300 border-8 border-orange-100 rounded-xl text-xs shadow-slate-500 shadow-sm text-black"
       whileInView={{
         opacity: [0.5, 1],
-        scale: [0.5, 1.25],
+        scale: [0.5, 1],
         transition: { duration: 0.15 },
       }}
     >
@@ -202,7 +207,9 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
             src={extraInfo.image_url}
             alt={modal.data.name}
           />
-          <GeneralInfo />
+          <div className="xs:min-w-80 min-w-96">
+            <GeneralInfo />
+          </div>
         </div>
       </div>
     </motion.div>
