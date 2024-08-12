@@ -51,6 +51,7 @@ export default function Creatures() {
       <div className="grid grid-cols-8 lg:grid-cols-5 xs:grid-cols-3 capitalize gap-1 text-black text-[8px]">
         {curCreature.map((i) => (
           <div
+            key={i.name}
             className={`flex flex-col justify-between border-2 ${
               curCreatureSelection === "Fish"
                 ? "border-blue-400"
