@@ -1,6 +1,5 @@
 "use server";
 import Header from "../components/Header";
-import Test from "../components/Test";
 import FooterComponent from "../components/Footer";
 import { npcs } from "animal-crossing";
 import Npcs from "../components/Npc";

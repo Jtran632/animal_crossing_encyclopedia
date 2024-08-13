@@ -5,16 +5,74 @@ import { useState, useEffect, useMemo } from "react";
 import ScrollUp from "./ScrollUp";
 import { IoMale, IoFemale } from "react-icons/io5";
 import NpcModal from "./NpcModal";
-export default function Npcs({ data, cargoData }: any) {
+export default function Npcs({ data }: any) {
   // console.log(data);
   const [loading, setLoading] = useState(true);
   const [curPage, setCurPage] = useState(1);
   const [curData, setCurData] = useState(data);
+  const [cargoData, setCargoData] = useState<any>({});
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState({
     data: data,
     hidden: true,
   });
+  useEffect(() => {
+    async function fetchSpecialCharacters() {
+      const endpoint = "https://nookipedia.com/w/api.php";
+      const params = {
+        action: "cargoquery",
+        format: "json",
+        tables: "nh_special_character",
+        fields: [
+          "url",
+          "name",
+          "name_sort",
+          "image",
+          "image_url",
+          "photo",
+          "photo_url",
+          "icon",
+          "icon_url",
+          "quote",
+          "quote_wikitext",
+          "species",
+          "gender",
+          "gender_jp",
+          "birthday",
+          "birthday_sort",
+          "sign",
+          "umbrella",
+          "umbrella_hhp",
+          "default_phone",
+          "final_phone",
+          "hobby",
+          "life_points",
+          "hobby_points",
+          "wave_type",
+          "version_added",
+        ].join(","),
+        limit: "max",
+      };
+
+      const url =
+        `${endpoint}?origin=*` +
+        `&action=${params.action}` +
+        `&format=${params.format}` +
+        `&tables=${params.tables}` +
+        `&fields=${params.fields}` +
+        `&limit=${params.limit}`;
+
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      return res.json();
+    }
+
+    fetchSpecialCharacters().then((data) => {
+      setCargoData(data);
+    });
+  }, []);
   let extraData = cargoData.cargoquery;
   function CurExtraData(s: string) {
     let temp = {};
@@ -38,7 +96,7 @@ export default function Npcs({ data, cargoData }: any) {
     }
     setCurPage(1);
     setLoading(false);
-  }, [search, data]);
+  }, [cargoData]);
 
   let pages = Array(Math.ceil(data.length / 20))
     .fill(0)
