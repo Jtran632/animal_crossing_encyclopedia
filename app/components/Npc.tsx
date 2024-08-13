@@ -7,6 +7,7 @@ import { IoMale, IoFemale } from "react-icons/io5";
 import NpcModal from "./NpcModal";
 export default function Npcs({ data, cargoData }: any) {
   // console.log(data);
+  const [loading, setLoading] = useState(true);
   const [curPage, setCurPage] = useState(1);
   const [curData, setCurData] = useState(data);
   const [search, setSearch] = useState("");
@@ -36,6 +37,7 @@ export default function Npcs({ data, cargoData }: any) {
       );
     }
     setCurPage(1);
+    setLoading(false);
   }, [search, data]);
 
   let pages = Array(Math.ceil(data.length / 20))
@@ -130,36 +132,45 @@ export default function Npcs({ data, cargoData }: any) {
       </div>
     );
   }
+  {
+    loading && <div>Loading</div>;
+  }
   return (
     <div
       className={`text-black capitalize
        p-2 h-min-screen`}
     >
-      {modal.hidden && (
+      {!loading ? (
         <>
-          <div className="flex justify-center">
-            <input
-              className="border-2 border-black flex justify-center items-center "
-              onChange={(e) => setSearch(e.target.value)}
-            ></input>
-            <button
-              className="border-2 border-black bg-white px-2"
-              onClick={() => setSearch("")}
-            >
-              Clear
-            </button>
-          </div>
-          {search === "" && <Pages />}
-          <NpcGrid />
-          {search === "" && modal.hidden && <ScrollUp />}
+          {modal.hidden && (
+            <>
+              <div className="flex justify-center">
+                <input
+                  className="border-2 border-black flex justify-center items-center "
+                  onChange={(e) => setSearch(e.target.value)}
+                ></input>
+                <button
+                  className="border-2 border-black bg-white px-2"
+                  onClick={() => setSearch("")}
+                >
+                  Clear
+                </button>
+              </div>
+              {search === "" && <Pages />}
+              <NpcGrid />
+              {search === "" && modal.hidden && <ScrollUp />}
+            </>
+          )}
+          {!modal.hidden && (
+            <NpcModal
+              modal={modal}
+              setModal={setModal}
+              extraInfo={CurExtraData(modal.data.name)}
+            />
+          )}
         </>
-      )}
-      {!modal.hidden && (
-        <NpcModal
-          modal={modal}
-          setModal={setModal}
-          extraInfo={CurExtraData(modal.data.name)}
-        />
+      ) : (
+        <div>Loading</div>
       )}
     </div>
   );
