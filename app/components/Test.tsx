@@ -1,11 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { npcs } from "animal-crossing";
-import Header from "../components/Header";
-import FooterComponent from "../components/Footer";
-export default function Test() {
+export default function Test({ data }: any) {
   useEffect(() => {
-    console.log(npcs);
+    console.log(data, "data");
   }, []);
   return <div className="flex flex-col bg font-mono"></div>;
 }

@@ -4,11 +4,27 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 import ScrollUp from "./ScrollUp";
 import { IoMale, IoFemale } from "react-icons/io5";
-export default function Npcs({ data }: any) {
-  console.log(data);
+import NpcModal from "./NpcModal";
+export default function Npcs({ data, cargoData }: any) {
+  // console.log(data);
   const [curPage, setCurPage] = useState(1);
   const [curData, setCurData] = useState(data);
   const [search, setSearch] = useState("");
+  const [modal, setModal] = useState({
+    data: data,
+    hidden: true,
+  });
+  let extraData = cargoData.cargoquery;
+  function CurExtraData(s: string) {
+    let temp = {};
+    for (let i = 0; i < extraData.length; i++) {
+      if (extraData[i].title.name.toLowerCase() === s.toLowerCase()) {
+        temp = extraData[i].title;
+        break;
+      }
+    }
+    return temp;
+  }
   useEffect(() => {
     if (search === "") {
       setCurData(data);
@@ -46,15 +62,20 @@ export default function Npcs({ data }: any) {
                 aria-disabled
                 className="flex flex-col text-center items-center "
                 key={index}
+                onClick={() => {
+                  i.name.toLowerCase() !== "redd" &&
+                    setModal({ data: i, hidden: false });
+                }}
               >
                 <div className="flex w-full">
                   <div
                     style={{
                       backgroundColor: i.bubbleColor,
                     }}
-                    className={`border border-black border-b-0 w-full rounded-tl-md rounded-tr-md`}
+                    className={`border border-black
+                    } border-b-0 w-full rounded-tl-md rounded-tr-md`}
                   >
-                    {i.name}
+                    <div>{i.name}</div>
                   </div>
                 </div>
                 <div
@@ -80,9 +101,10 @@ export default function Npcs({ data }: any) {
                         {i.gender}
                       </div>
                     </div>
-                    <div className="w-full bg-white">
-                      Birthday - {i.birthday}
-                    </div>
+                    <div className="w-full">Birthday - {i.birthday}</div>
+                    {i.name.toLowerCase() === "redd" && (
+                      <div>No modal Available</div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -113,21 +135,32 @@ export default function Npcs({ data }: any) {
       className={`text-black capitalize
        p-2 h-min-screen`}
     >
-      <div className="flex justify-center">
-        <input
-          className="border-2 border-black flex justify-center items-center "
-          onChange={(e) => setSearch(e.target.value)}
-        ></input>
-        <button
-          className="border-2 border-black bg-white px-2"
-          onClick={() => setSearch("")}
-        >
-          Clear
-        </button>
-      </div>
-      {search === "" && <Pages />}
-      <NpcGrid />
-      {search === "" && <ScrollUp />}
+      {modal.hidden && (
+        <>
+          <div className="flex justify-center">
+            <input
+              className="border-2 border-black flex justify-center items-center "
+              onChange={(e) => setSearch(e.target.value)}
+            ></input>
+            <button
+              className="border-2 border-black bg-white px-2"
+              onClick={() => setSearch("")}
+            >
+              Clear
+            </button>
+          </div>
+          {search === "" && <Pages />}
+          <NpcGrid />
+          {search === "" && modal.hidden && <ScrollUp />}
+        </>
+      )}
+      {!modal.hidden && (
+        <NpcModal
+          modal={modal}
+          setModal={setModal}
+          extraInfo={CurExtraData(modal.data.name)}
+        />
+      )}
     </div>
   );
 }

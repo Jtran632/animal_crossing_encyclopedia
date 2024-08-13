@@ -4,46 +4,39 @@ import { motion } from "framer-motion";
 import { IoMale, IoFemale } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { items } from "animal-crossing";
-
 interface Item {
   url: string;
   name: string;
 }
-interface itemPicsI {
-  umbrella: Item;
-  wallpaper: Item;
-  flooring: Item;
-}
 export default function VillagerModal({ modal, setModal, extraInfo }: any) {
+  const [umbrella, setUmbrella] = useState<Item>({ url: "", name: "" });
   const [hover, setHover] = useState(false);
   const [hoverText, setHoverText] = useState("");
-  const [itemPics, setItemPics] = useState<itemPicsI>({
-    "umbrella": { "url": "", "name": "" },
-    "wallpaper": { "url": "", "name": "" },
-    "flooring": { "url": "", "name": "" },
-  });
-  console.log("modalData", modal);
-
   useEffect(() => {
     console.log(extraInfo, "extraInfo");
     window.scrollTo(0, 0);
-    function getItem(s: string) {
-      return items.find((i) => i.name === modal.data[s]);
+    let name = "";
+    if (extraInfo.umbrella !== "") {
+      name = extraInfo.umbrella.toLowerCase();
+    } else {
+      name = extraInfo.umbrella_hhp.toLowerCase();
     }
-    let umbrella = getItem("defaultUmbrella");
-    let wallpaper = getItem("wallpaper");
-    let flooring = getItem("flooring");
-    let result = {
-      umbrella: {
-        url: umbrella?.storageImage ?? "",
-        name: umbrella?.name ?? "",
-      },
-      wallpaper: { url: wallpaper?.image ?? "", name: wallpaper?.name ?? "" },
-      flooring: { url: flooring?.image ?? "", name: flooring?.name ?? "" },
-    };
-    setItemPics({ ...itemPics, ...result });
-  }, [extraInfo]);
+    console.log(name);
 
+    // console.log(items);
+    function getItem(s: string) {
+      return items.find((i) => i.name.toLowerCase() === s);
+    }
+    let umbrella = getItem(name);
+    let result = {
+      url: umbrella?.storageImage ?? "",
+      name: umbrella?.name ?? "",
+    };
+    setUmbrella(result);
+  }, [extraInfo]);
+  useEffect(() => {
+    console.log(umbrella, "umbrella");
+  }, [umbrella]);
   function suffix(n: number) {
     if (n % 100 >= 11 && n % 100 <= 13) {
       return "th";
@@ -64,9 +57,9 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
     if (topInfo) {
       return (
         <div className="grid w-full shadow-sm shadow-slate-500">
-          <div className="px-2 py-1 font-bold bg-green-200 capitalize">{s}</div>
+          <div className="px-2 py-1 font-bold bg-blue-200 capitalize">{s}</div>
           {s === "gender" ? (
-            <div className="flex items-center px-2 py-1 border-t-2 border-orange-100 bg-white gap-2">
+            <div className="flex items-center px-2 py-1 border-t-2 border-pink-100 bg-white gap-2">
               {info === "Male" ? (
                 <IoMale className="text-blue-400" />
               ) : (
@@ -75,19 +68,19 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
               {info}
             </div>
           ) : (
-            <div className="px-2 py-1 bg-white border-t-2 border-orange-100">
+            <div className="px-2 py-1 bg-white border-t-2 border-pink-100">
               {info}
             </div>
           )}
         </div>
       );
     } else {
-      let a = suffix(modal.data.birthday_day);
+      let a = suffix(extraInfo.birthday.split(" ")[1]);
       return (
         <div className="flex justify-center w-full">
           {info !== "" && (
-            <div className="flex w-full border-2 border-orange-100 rounded-md shadow-sm shadow-slate-500">
-              <div className="w-1/3 bg-green-200 border-r-2 p-2  flex items-center justify-start">
+            <div className="flex w-full border-2 border-pink-100 rounded-md shadow-sm shadow-slate-500">
+              <div className="w-1/3 bg-blue-200 border-r-2 p-2  flex items-center justify-start">
                 {s.replace("favorite", "").replace("default", "")}
               </div>
 
@@ -95,11 +88,7 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
               <div className="w-2/3 gap-1 bg-white text-pretty p-2">
                 {s.includes("birthday") ? (
                   <>
-                    {extraInfo.birthday_month}
-                    <div>
-                      {extraInfo.birthday_day}
-                      {a}
-                    </div>
+                    <div>{extraInfo.birthday + a}</div>
                   </>
                 ) : (
                   info
@@ -113,66 +102,57 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
   }
   function GeneralInfo() {
     return (
-      <div className="flex flex-col text-xs text-center gap-1 border-t-4 border-orange-100 mt-2 p-2 bg-emerald-200">
+      <div className="flex flex-col text-xs text-center gap-1 border-t-2 border-pink-100 mt-2 p-2 bg-blue-300">
         {/*top info */}
-        <div className="flex border-4 border-orange-100 rounded-md">
-          {GeneralItem("species", false, true)}
+        <div className="flex border-4 border-pink-100 rounded-md">
+          {GeneralItem("species", true, true)}
           {GeneralItem("sign", true, true)}
-          {GeneralItem("personality", true, true)}
-          {GeneralItem("gender", false, true)}
+          {GeneralItem("gender", true, true)}
         </div>
         {/* bottom info */}
         <div className="flex flex-col gap-1">
           {GeneralItem("birthday", true, false)}
-          {GeneralItem("debut", true, false)}
-          {GeneralItem("hobby", false, false)}
-          {GeneralItem("favoriteSong", false, false)}
-          {GeneralItem("defaultClothing", false, false)}
-          {GeneralItem("defaultUmbrella", false, false)}
-          {GeneralItem("catchphrase", false, false)}
-          {GeneralItem("favoriteSaying", false, false)}
+          {GeneralItem("hobby", true, false)}
+          {extraInfo.umbrella
+            ? GeneralItem("umbrella", true, false)
+            : GeneralItem("umbrella_hhp", true, false)}
+          {GeneralItem("quote", true, false)}
         </div>
       </div>
     );
   }
-  function RenderItemPics() {
-    let imageNames: itemPicsKey[] = ["umbrella", "wallpaper", "flooring"];
-    type itemPicsKey = keyof itemPicsI;
+  function RenderUmbrella() {
     return (
       <div className="flex items-center w-6 gap-1">
-        {imageNames.map((i: itemPicsKey, index: number) => (
-          <img
-            key={index}
-            className="hover:scale-125"
-            src={itemPics[i].url}
-            alt={itemPics[i].name}
-            onMouseEnter={() => {
-              setHover(true);
-              setHoverText(itemPics[i].name);
-            }}
-            onMouseLeave={() => setHover(false)}
-          />
-        ))}
+        <img
+          className="hover:scale-125"
+          src={umbrella.url}
+          alt={umbrella.name}
+          onMouseEnter={() => {
+            setHover(true);
+            setHoverText(umbrella.name);
+          }}
+          onMouseLeave={() => setHover(false)}
+        />
       </div>
     );
   }
-
   return (
     <motion.div
-      className=" bg-green-300 border-8 border-orange-100 rounded-xl text-xs shadow-slate-500 shadow-sm text-black"
+      className=" bg-blue-300 border-8 border-pink-100 rounded-xl text-xs shadow-slate-500 shadow-sm text-black"
       whileInView={{
         opacity: [0.5, 1],
         scale: [0.5, 1],
         transition: { duration: 0.15 },
       }}
     >
-      <div className="m-2 border-2 rounded-md border-orange-100">
+      <div className="m-2 border-2 rounded-md border-pink-100">
         <div className="flex flex-col items-center">
           <div className="flex justify-between w-full px-2 pt-2">
-            {RenderItemPics()}
+            {RenderUmbrella()}
             <button
               onClick={() => setModal({ data: {}, hidden: true })}
-              className=" bg-white border-2 border-orange-200 rounded-full h-6 w-6 font-thin text-orange-400 shadow-sm shadow-slate-400 hover:scale-125"
+              className=" bg-white border-2 border-pink-200 rounded-full h-6 w-6 font-thin text-orange-400 shadow-sm shadow-slate-400 hover:scale-125"
             >
               X
             </button>
@@ -186,10 +166,12 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
                 <img
                   src={modal.data?.iconImage}
                   alt={modal.data.name}
-                  className="h-10 bg-green-200 rounded-full rounded-r-none px-1"
+                  className="h-10 bg-blue-200 rounded-full rounded-r-none px-1"
                 ></img>
                 <div
-                  className={`flex items-center justify-center text-2xl font-bold px-2 h-10 bg-orange-300 text-white rounded-full rounded-l-none`}
+                  className={`flex items-center justify-center text-2xl font-bold px-2 h-10 bg-pink-200 text-white text rounded-full ${
+                    modal.data.iconImage ? "rounded-l-none" : ""
+                  }`}
                 >
                   {modal.data.name}
                 </div>
@@ -204,8 +186,10 @@ export default function VillagerModal({ modal, setModal, extraInfo }: any) {
           </div>
           <img
             className="h-36 rounded-xl"
-            src={extraInfo.image_url}
-            alt={modal.data.name}
+            src={
+              extraInfo?.image_url ? extraInfo.image_url : extraInfo?.photo_url
+            }
+            alt={extraInfo.photo}
           />
           <div className="xs:min-w-80 min-w-96">
             <GeneralInfo />
