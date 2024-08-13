@@ -49,7 +49,7 @@ async function fetchSpecialCharacters() {
     `&fields=${params.fields}` +
     `&limit=${params.limit}`;
 
-  const res = await fetch(url);
+  const res = await fetch(url, {next: {revalidate: 3600}});
   if (!res.ok) {
     throw new Error(`HTTP error! Status: ${res.status}`);
   }
