@@ -56,16 +56,21 @@ async function fetchSpecialCharacters() {
   return res.json();
 }
 export default async function NpcPage() {
-  let cargoData = await fetchSpecialCharacters();
-  return (
-    <div className="flex flex-col bg font-mono">
-      <Header />
-      <main className="">
-        <div className="flex justify-center items-start min-h-screen">
-          <Npcs data={npcs} cargoData={cargoData} />
-        </div>
-      </main>
-      <FooterComponent />
-    </div>
-  );
+  try {
+    let cargoData = await fetchSpecialCharacters();
+    return (
+      <div className="flex flex-col bg font-mono">
+        <Header />
+        <main className="">
+          <div className="flex justify-center items-start min-h-screen">
+            <Npcs data={npcs} cargoData={cargoData} />
+          </div>
+        </main>
+        <FooterComponent />
+      </div>
+    );
+  } catch (error) {
+    console.log(error);
+    return <div>ERROR PAGE NOT FOUND</div>;
+  }
 }
